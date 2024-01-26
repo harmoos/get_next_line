@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nleoni <nleoni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 20:24:04 by nleoni            #+#    #+#             */
-/*   Updated: 2024/01/26 12:44:54 by nleoni           ###   ########.fr       */
+/*   Updated: 2024/01/26 17:15:58 by nleoni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*ft_strchr(const char *s, int c)
 {
@@ -45,7 +45,7 @@ char	*set_line(char *line_dest)
 	return (let_c);
 }
 
-char	*temp_dest(int fd, char *let_c, char *bf)
+char	*temp_dest(int fd, char **let_c, char *bf)
 {
 	ssize_t	b_read;
 	char	*tmp;
@@ -56,44 +56,44 @@ char	*temp_dest(int fd, char *let_c, char *bf)
 		b_read = read(fd, bf, BUFFER_SIZE);
 		if (b_read == -1)
 		{
-			free(let_c);
+			free(*let_c);
 			return (NULL);
 		}
 		else if (b_read == 0)
 			break ;
-		bf[b_read] = 0;
-		if (!let_c)
-			let_c = ft_strdup("");
-		tmp = let_c;
-		let_c = ft_strjoin(tmp, bf);
+		bf[b_read] = '\0';
+		if (!*let_c)
+			*let_c = ft_strdup("");
+		tmp = *let_c;
+		*let_c = ft_strjoin(tmp, bf);
 		free(tmp);
+		if (*let_c == NULL)
+			return (NULL);
 		tmp = NULL;
 		if (ft_strchr(bf, '\n'))
 			break ;
 	}
-	return (let_c);
+	return (*let_c);
 }
 
 char	*get_next_line(int fd)
 {
-	static char		*let_c;
+	static char		*let_c[MAX_FD + 1];
 	char			*line;
 	char			*bf;
 
-	bf = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &line, 0) < 0 || !bf)
-	{
-		free(let_c);
-		free(bf);
-		let_c = NULL;
-		bf = NULL;
+	if (fd < 0 || fd > MAX_FD || BUFFER_SIZE <= 0)
 		return (NULL);
-	}
-	line = temp_dest(fd, let_c, bf);
+	bf = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (bf == NULL)
+		return (NULL);
+	line = temp_dest(fd, &let_c[fd], bf);
 	free(bf);
 	bf = NULL;
-	if (!line)
+	if (!line || *line == '\0')
+	{
 		return (NULL);
-	let_c = set_line(line);
+	}
+	let_c[fd] = set_line(line);
 	return (line);
 }

@@ -1,19 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nleoni <nleoni@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 20:19:56 by nleoni            #+#    #+#             */
-/*   Updated: 2024/01/26 12:48:05 by nleoni           ###   ########.fr       */
+/*   Updated: 2024/01/26 14:33:42 by nleoni           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
+
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 42
+# endif
+
+# ifndef MAX_FD
+#  define MAX_FD 256
 # endif
 
 # include	<fcntl.h>
@@ -22,7 +27,7 @@
 
 char		*get_next_line(int fd);
 char		*set_line(char *line_dest);
-char		*temp_dest(int fd, char *let_c, char *bf);
+char		*temp_dest(int fd, char **let_c, char *bf);
 
 char		*ft_strchr(const char *s, int c);
 char		*ft_strdup(const char *s);
